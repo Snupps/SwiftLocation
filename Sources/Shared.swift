@@ -380,8 +380,16 @@ public extension CLLocationManager {
 	/// - Parameter key: key to validate
 	/// - Returns: `true` if exists
 	private static func hasPlistValue(forKey key: String) -> Bool {
-		guard let dict = Bundle.main.infoDictionary else { return false }
-		return ((dict[key] as? String)?.isEmpty ?? true == false)
+        func hasValue(in dict: [String: Any]?) -> Bool {
+            guard let value = dict?[key] as? String else {
+                return false
+            }
+
+            return !value.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        }
+
+        return hasValue(in: Bundle.main.infoDictionary) ||
+            hasValue(in: Bundle.main.localizedInfoDictionary)
 	}
 	
 	/// Current state of the authorization service
